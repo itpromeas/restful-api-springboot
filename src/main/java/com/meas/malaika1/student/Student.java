@@ -1,26 +1,50 @@
 package com.meas.malaika1.student;
 
+import jakarta.persistence.*;
+
 import java.time.LocalDate;
+import java.time.Period;
 
+@Entity // this is for Hibernate
+@Table // this is for the table... for our database
 public class Student {
-
+    @Id
+    @SequenceGenerator(
+            name = "student_sequence",
+            sequenceName = "student_sequence",
+            allocationSize = 1
+    )
+    @GeneratedValue(
+            strategy = GenerationType.SEQUENCE,
+            generator = "student_sequence"
+    )
     private Long id;
     private String name;
     private String email;
+
+    @Transient // no need to be a column iin our database
     private Integer age;
     private LocalDate dateOfBirth;
 
 
-    public Student() {
+    public Student(){
+
     }
 
-    public Student(Long id, String name, String email, Integer age, LocalDate dateOfBirth) {
+    public Student(Long id, String name, String email, LocalDate dateOfBirth) {
         this.id = id;
         this.name = name;
         this.email = email;
-        this.age = age;
         this.dateOfBirth = dateOfBirth;
     }
+
+    public Student(String name, String email, LocalDate dateOfBirth) {
+        this.name = name;
+        this.email = email;
+        this.dateOfBirth = dateOfBirth;
+    }
+
+
 
 
     public Long getId() {
@@ -48,7 +72,7 @@ public class Student {
     }
 
     public Integer getAge() {
-        return age;
+        return Period.between(this.dateOfBirth, LocalDate.now()).getYears();
     }
 
     public void setAge(Integer age) {
